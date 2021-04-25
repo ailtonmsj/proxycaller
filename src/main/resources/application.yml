@@ -1,1 +1,7 @@
-remoteURL: http://simple-data:8080/
+# TO LOCAL
+remoteURL: http://localhost:8080/
+
+# TO K8S
+#remoteURL: http://simpledata.demo-circuitbreaker.svc.cluster.local
+server:
+  port: 8081

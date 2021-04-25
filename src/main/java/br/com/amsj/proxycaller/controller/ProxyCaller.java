@@ -1,17 +1,17 @@
-package br.com.amsj.controller;
+package br.com.amsj.proxycaller.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.com.amsj.client.SimpleCallerClient;
+import br.com.amsj.proxycaller.client.SimpleCallerClient;
 import feign.Feign;
 import feign.okhttp.OkHttpClient;
 
-@Component
+@RestController
 public class ProxyCaller {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -20,7 +20,7 @@ public class ProxyCaller {
 	String remoteUrl; 
 	
 	@RequestMapping(method=RequestMethod.GET, path="/")
-	public void scheduleCall() {
+	public String proxy() {
 		
 		log.info("begin proxy");
 		
@@ -31,5 +31,7 @@ public class ProxyCaller {
 		log.info("date - " + date);
 		
 		log.info("end proxy");
+		
+		return date;
 	}
 }

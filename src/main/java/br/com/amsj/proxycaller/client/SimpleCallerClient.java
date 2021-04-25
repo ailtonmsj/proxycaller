@@ -1,4 +1,4 @@
-package br.com.amsj.client;
+package br.com.amsj.proxycaller.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 

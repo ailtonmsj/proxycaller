@@ -9,10 +9,10 @@
 		<version>2.4.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.amsj.simpleapi</groupId>
-	<artifactId>CallerSimpleData</artifactId>
+	<groupId>br.com.amsj.proxycaller</groupId>
+	<artifactId>ProxyCaller</artifactId>
 	<version>1.0.0</version>
-	<name>CallerSimpleData</name>
+	<name>ProxyCaller</name>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.0</spring-cloud.version>
@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-quartz</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpledataredundant
+  namespace: demo-circuitbreaker
+spec:
+  selector:
+    matchLabels:
+      app: simpledataredundant
+  replicas: 1
+  template:
+    metadata:
+      name: simpledataredundant
+      labels:
+        app: simpledataredundant
+        version: v1
+    spec:
+      containers:
+      - name: simpledataredundant
+        image: ailtonmsj/simpledataredundant:v1
+        imagePullPolicy: Always

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-circuitbreaker
+  labels:
+    istio-injection: enabled
+---
