@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableFeignClients
-public class CallerSimpleDataApplication {
+public class ProxyCallerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CallerSimpleDataApplication.class, args);
+		SpringApplication.run(ProxyCallerApplication.class, args);
 	}
 
 }
