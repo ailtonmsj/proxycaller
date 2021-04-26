@@ -1,12 +1,12 @@
 kind: Gateway
 apiVersion: networking.istio.io/v1alpha3
 metadata:
-  name: simpledataredundant-gateway
+  name: proxycaller-gateway
   namespace: demo-circuitbreaker
 spec:
   servers:
     - hosts:
-        - simpledataredundant.teste.com.br
+        - proxycaller.teste.com.br
       port:
         name: http
         number: 443

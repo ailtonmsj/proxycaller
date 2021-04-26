@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simpledataredundant
+  name: proxycaller
   namespace: demo-circuitbreaker
 spec:
   selector:
     matchLabels:
-      app: simpledataredundant
+      app: proxycaller
   replicas: 1
   template:
     metadata:
-      name: simpledataredundant
+      name: proxycaller
       labels:
-        app: simpledataredundant
+        app: proxycaller
         version: v1
     spec:
       containers:
-      - name: simpledataredundant
-        image: ailtonmsj/simpledataredundant:v1
+      - name: proxycaller
+        image: ailtonmsj/proxycaller:v1
         imagePullPolicy: Always

@@ -1,18 +1,18 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: simpledataredundant-vs
+  name: proxycaller-vs
   namespace: demo-circuitbreaker
 spec:
   hosts:
-  - simpledataredundant.teste.com.br
+  - proxycaller.teste.com.br
   gateways:
-  - demo-circuitbreaker/simpledataredundant-gateway
+  - demo-circuitbreaker/proxycaller-gateway
   http:
   - route:
     - destination:
-        host: simpledataredundant.demo-circuitbreaker.svc.cluster.local
+        host: proxycaller.demo-circuitbreaker.svc.cluster.local
         port:
-          number: 8080
+          number: 8081
         subset: v1
       weight: 100

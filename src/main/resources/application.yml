@@ -1,7 +1,7 @@
 # TO LOCAL
-remoteURL: http://localhost:8080/
+#remoteURL: http://localhost:8080/
 
 # TO K8S
-#remoteURL: http://simpledata.demo-circuitbreaker.svc.cluster.local
+remoteURL: http://simpledata.demo-circuitbreaker.svc.cluster.local:8080/
 server:
   port: 8081
