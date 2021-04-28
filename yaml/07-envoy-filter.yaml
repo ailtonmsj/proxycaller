@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: test-filter
+  namespace: demo-circuitbreaker
+spec:
+  workloadSelector:
+    labels:
+      app: proxycaller
+  filters:
+  - listenerMatch:
+      portNumber: 8080
+      listenerType: SIDECAR_INBOUND # will match with the inbound listener for reviews:8080
+      listenerProtocol: HTTP
+    filterName: envoy.lua
+    filterType: HTTP
+    filterConfig:
+      inlineCode: |
+        print("LUA INICIO")
+        local http = require("socket.http")
+        local inp = http.request("http://simpledataredundant.demo-circuitbreaker.svc.cluster.local:8080")
+        print("LUA FIM")
