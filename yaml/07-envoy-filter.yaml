@@ -7,16 +7,78 @@ spec:
   workloadSelector:
     labels:
       app: proxycaller
-  filters:
-  - listenerMatch:
-      portNumber: 8080
-      listenerType: SIDECAR_INBOUND # will match with the inbound listener for reviews:8080
-      listenerProtocol: HTTP
-    filterName: envoy.lua
-    filterType: HTTP
-    filterConfig:
-      inlineCode: |
-        print("LUA INICIO")
-        local http = require("socket.http")
-        local inp = http.request("http://simpledataredundant.demo-circuitbreaker.svc.cluster.local:8080")
-        print("LUA FIM")
+  configPatches:
+    # The first patch adds the lua filter to the listener/http connection manager
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        portNumber: 8081
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+            subFilter:
+              name: "envoy.filters.http.router"
+    patch:
+      operation: INSERT_BEFORE
+      value: # lua filter specification
+       name: envoy.lua
+       typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          inlineCode: |
+            function envoy_on_response(response_handle)
+              
+              -- Make an HTTP call to an upstream host with the following headers, body, and timeout.
+              print("LUA TEST INICIO10")
+              local httpStatus = tonumber(response_handle:headers():get(":status"))
+              print("ECHO " ..httpStatus)
+
+              response_handle:body()
+
+              if (httpStatus >= 500 and httpStatus <= 599) then
+                print(">> ERRO NO BACKEND")
+                local headers, body = response_handle:httpCall(
+                "lua_cluster",
+                {
+                  [":method"] = "GET",
+                  [":path"] = "/",
+                  [":authority"] = "simpledataredundant.demo-circuitbreaker.svc.cluster.local"
+                },
+                "authorize call",
+                2000)
+
+                print(">> ANTES RESPOSTA")
+
+                print(headers)
+                print(body)
+
+                local content_length = response_handle:body():setBytes(body)
+                response_handle:headers():replace("content-length", content_length)
+                response_handle:headers():replace(":status", "200")
+                
+              end
+
+              print("LUA TEST FIM")
+            end
+  # The second patch adds the cluster that is referenced by the lua code
+  # cds match is omitted as a new cluster is being added
+  - applyTo: CLUSTER
+    match:
+      context: SIDECAR_OUTBOUND
+    patch:
+      operation: ADD
+      value: # cluster specification
+        name: "lua_cluster"
+        type: STRICT_DNS
+        connect_timeout: 0.5s
+        lb_policy: ROUND_ROBIN
+        load_assignment:
+          cluster_name: lua_cluster
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    protocol: TCP
+                    address: "simpledataredundant.demo-circuitbreaker.svc.cluster.local"
+                    port_value: 8080
