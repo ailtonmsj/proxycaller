@@ -1,5 +1,10 @@
 package br.com.amsj.proxycaller.controller;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +25,18 @@ public class ProxyCaller {
 	String remoteUrl; 
 	
 	@RequestMapping(method=RequestMethod.GET, path="/")
-	public String proxy() {
+	public String proxy(HttpServletRequest request) {
 		
 		log.info("begin proxy");
+		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		
+		Iterator<String> iterator = headerNames.asIterator();
+		
+		while(iterator.hasNext()) {
+			String headerName = iterator.next();
+			log.info("headerName --> " + headerName + " - " +  request.getHeader(headerName));
+		}
 		
 		SimpleCallerClient client = Feign.builder().client(new OkHttpClient()).target(SimpleCallerClient.class, remoteUrl);
 		
