@@ -3,5 +3,7 @@
 
 # TO K8S
 remoteURL: http://simpledata.demo-circuitbreaker.svc.cluster.local:8080/
+fallbackRemoteURL: http://simpledataredundant.demo-circuitbreaker.svc.cluster.local:8080/
+
 server:
   port: 8081

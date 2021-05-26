@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.amsj.proxycaller.client.SimpleCallerClient;
+import br.com.amsj.proxycaller.client.SimpleCallerRedundantClient;
 import feign.Feign;
 import feign.okhttp.OkHttpClient;
 
@@ -23,6 +24,9 @@ public class ProxyCaller {
 	
 	@Value("${remoteURL}")
 	String remoteUrl; 
+	
+	@Value("${fallbackRemoteURL}")
+	String fallbackRemoteURL;
 	
 	@RequestMapping(method=RequestMethod.GET, path="/")
 	public String proxy(HttpServletRequest request) {
@@ -38,9 +42,18 @@ public class ProxyCaller {
 			log.info("headerName --> " + headerName + " - " +  request.getHeader(headerName));
 		}
 		
-		SimpleCallerClient client = Feign.builder().client(new OkHttpClient()).target(SimpleCallerClient.class, remoteUrl);
+		String date = "";
 		
-		String date = client.getCurrentDate();
+		// A LOGICA DO TRY CATCH EH PARA NAO PRECISAR DO ENVOY FILTER DIECIONANDO PARA O FALLBACK
+		try {
+			SimpleCallerClient client = Feign.builder().client(new OkHttpClient()).target(SimpleCallerClient.class, remoteUrl);
+			date = client.getCurrentDate();
+		}catch (Exception e) {
+			log.error("Obtendo valores do fallback");
+			
+			SimpleCallerRedundantClient redundantClient = Feign.builder().client(new OkHttpClient()).target(SimpleCallerRedundantClient.class, fallbackRemoteURL);
+			date = redundantClient.getCurrentDateRedundant();
+		}
 		
 		log.info("date - " + date);
 		

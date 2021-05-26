@@ -28,15 +28,16 @@ spec:
           inlineCode: |
             function envoy_on_response(response_handle)
               
-              -- Make an HTTP call to an upstream host with the following headers, body, and timeout.
-              print("LUA TEST INICIO10")
-              local httpStatus = tonumber(response_handle:headers():get(":status"))
-              print("ECHO " ..httpStatus)
+              print(">>> LUA TEST INICIO")
 
+              -- Make an HTTP call to an upstream host with the following headers, body, and timeout.
+              local httpStatus = tonumber(response_handle:headers():get(":status"))
+
+              -- It is needed
               response_handle:body()
 
               if (httpStatus >= 500 and httpStatus <= 599) then
-                print(">> ERRO NO BACKEND")
+                print("ERRO NO BACKEND " ..httpStatus)
                 local headers, body = response_handle:httpCall(
                 "lua_cluster",
                 {
@@ -44,22 +45,32 @@ spec:
                   [":path"] = "/",
                   [":authority"] = "simpledataredundant.demo-circuitbreaker.svc.cluster.local"
                 },
-                "authorize call",
+                "body value",
                 2000)
 
-                print(">> ANTES RESPOSTA")
+                print("ANTES RESPOSTA")
 
-                print(headers)
-                print(body)
+                local statusCode = "";
 
+                -- NEW HEADERS
+                for key, value in pairs(headers) do
+                  if(key == ":status") then
+                    statusCode = value
+                    break
+                  end
+                end
+
+                print("BODY " ..body)
+                print("STATUS CODE " ..statusCode)
+ 
                 local content_length = response_handle:body():setBytes(body)
                 response_handle:headers():replace("content-length", content_length)
-                response_handle:headers():replace(":status", "200")
-                
+                response_handle:headers():replace(":status", statusCode)
               end
 
-              print("LUA TEST FIM")
+              print(">>> LUA TEST FIM")
             end
+            
   # The second patch adds the cluster that is referenced by the lua code
   # cds match is omitted as a new cluster is being added
   - applyTo: CLUSTER
