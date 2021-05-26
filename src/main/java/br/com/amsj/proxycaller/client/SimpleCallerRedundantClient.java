@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import feign.RequestLine;
 
-@FeignClient("client")
+@FeignClient("clientRedundante")
 public interface SimpleCallerRedundantClient {
 
 	@RequestLine("GET /")
