@@ -8,8 +8,12 @@ spec:
     - hosts:
         - proxycaller.teste.com.br
       port:
-        name: http
+        name: proxycaller-https-443
         number: 443
-        protocol: HTTP
+        protocol: HTTPS
+      # TO ENABLE TLS
+      tls:
+        mode: SIMPLE # enables HTTPS on this port
+        credentialName: istio-system/proxycaller-cert-ingress
   selector:
     istio: ingressgateway

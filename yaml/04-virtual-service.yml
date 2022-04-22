@@ -7,7 +7,7 @@ spec:
   hosts:
   - proxycaller.teste.com.br
   gateways:
-  - demo-circuitbreaker/proxycaller-gateway
+  - proxycaller-gateway
   http:
   - route:
     - destination:

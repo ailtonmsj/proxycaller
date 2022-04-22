@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: proxycaller-cert-ingress
+  namespace: istio-system # ingress cannot search for certificate in other namespace anymore ( maybe referente policy can solve this )
+spec:
+  secretName: proxycaller-cert-ingress
+  dnsNames:
+    - proxycaller.teste.com.br
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---

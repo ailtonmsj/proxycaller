@@ -93,3 +93,29 @@ spec:
                     protocol: TCP
                     address: "simpledataredundant.demo-circuitbreaker.svc.cluster.local"
                     port_value: 8080
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: http-server
+spec:
+  exportTo:
+  - demo-circuitbreaker
+  hosts:
+  - simpledataredundant.demo-circuitbreaker.svc.cluster.local
+  #location: MESH_EXTERNAL
+  ports:
+  - number: 8080
+    name: teste
+    protocol: http
+  #resolution: DNS
+  #endpoints:
+  #- address: 23.32.228.117
+  #- address: 191.252.133.129
+  #- address: 2.2.2.2
+  #- address: google.com.br
+  #- address: simpledataredundant.demo-circuitbreaker.svc.cluster.local
+  
+
